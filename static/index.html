@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استودیو نگارش مقاله با هوش مصنوعی کانسنسوس | Consensus PaperCraft</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">📚</div>
+        <div>
+          <div class="brand-title">Consensus PaperCraft Studio</div>
+          <div class="brand-sub">استودیو نگارش مقاله علمی با توزیع بار بین حساب‌های Consensus.app</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div id="pool-status-badge" class="badge badge-secondary">
+          <span class="spinner" style="border-top-color:#64748b; width:12px; height:12px;"></span>
+          در حال بررسی کلیدها...
+        </div>
+
+        <button id="toggle-demo-btn" class="btn btn-secondary btn-sm" onclick="toggleDemoMode()" title="حالت آزمایشی بدون نیاز به کلید واقعی">
+          🧪 حالت آزمایشی: <span id="demo-mode-status">غیرفعال</span>
+        </button>
+
+        <button class="btn btn-secondary btn-sm" onclick="toggleTheme()" title="تغییر تم">
+          🌓
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('writer')">
+        <span>✍️</span> نگارش مقاله علمی
+      </button>
+      <button class="tab-btn" onclick="switchTab('search')">
+        <span>🔍</span> کاوش مقالات کانسنسوس
+      </button>
+      <button class="tab-btn" onclick="switchTab('library')">
+        <span>📚</span> کتابخانه و ماتریس ادبیات (<span id="nav-library-count">۰</span>)
+      </button>
+      <button class="tab-btn" onclick="switchTab('keys')">
+        <span>🔑</span> مدیریت استخر کلیدها (<span id="nav-keys-count">۰</span>)
+      </button>
+      <button class="tab-btn" onclick="switchTab('logs')">
+        <span>📊</span> لاگ زنده و سوییچ خودکار
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main>
+
+    <!-- TAB 1: PAPER WRITER STUDIO -->
+    <div id="tab-writer" class="tab-content active">
+      <div class="grid-4" style="margin-bottom: 20px;">
+        <div class="stat-box">
+          <div class="stat-val" id="stat-saved-papers">۰</div>
+          <div class="stat-lbl">مقالات استناد شده</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-words-count">۰</div>
+          <div class="stat-lbl">تعداد کلمات متن</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-sections-count">۰</div>
+          <div class="stat-lbl">بخش‌های نگارش‌شده</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" style="color:var(--accent);">آماده چاپ</div>
+          <div class="stat-lbl">خروجی استاندارد Word & APA</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Controls & Scope Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚙️ تنظیمات نگارش مقاله</div>
+            <button class="btn btn-secondary btn-sm" onclick="loadSampleTopic()">💡 موضوع نمونه</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">موضوع پژوهش یا عنوان اصلی مقاله:</label>
+            <input type="text" id="paper-topic" class="form-control" placeholder="مثال: ارزیابی عملکرد نظام‌های ثبت بالینی با تصمیم‌گیری چندمعیاره">
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">زبان نگارش:</label>
+              <select id="paper-language" class="form-control">
+                <option value="fa">فارسی (علمی دانشگاهی)</option>
+                <option value="en">English (Academic Standard)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">فرمت ارجاع‌دهی:</label>
+              <select id="paper-citation-style" class="form-control">
+                <option value="APA">APA 7th Edition</option>
+                <option value="Vancouver">Vancouver (عددی)</option>
+                <option value="IEEE">IEEE Reference Style</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">بخش مورد نظر برای نگارش:</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <button class="btn btn-secondary btn-sm scope-btn active" data-scope="full_paper" onclick="selectScope(this)">✨ کل مقاله کامل</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="title" onclick="selectScope(this)">📌 عناوین پیشنهادی</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="abstract" onclick="selectScope(this)">📋 چکیده (Abstract)</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="introduction" onclick="selectScope(this)">📖 مقدمه و بیان مسئله</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="literature_review" onclick="selectScope(this)">📚 مرور ادبیات و پیشینه</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="matrix" onclick="selectScope(this)">📊 ماتریس تطبیقی مقالات</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="methodology" onclick="selectScope(this)">🔬 متدولوژی و روش کار</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="results_discussion" onclick="selectScope(this)">📈 نتایج و بحث</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="conclusion" onclick="selectScope(this)">🏁 نتیجه‌گیری</button>
+              <button class="btn btn-secondary btn-sm scope-btn" data-scope="references" onclick="selectScope(this)">📑 مراجع و منابع</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button id="generate-paper-btn" class="btn btn-primary" style="width:100%; padding:14px; font-size:15px;" onclick="generatePaperSection()">
+              <span>🚀</span> تولید و سنتز بخش مقاله با استناد به شواهد
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected Papers Library in Writer -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📖 مقالات انتخاب‌شده برای استناد در مقاله</div>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('search')">➕ جستجوی مقالات بیشتر</button>
+          </div>
+
+          <div id="writer-selected-papers-list" style="max-height: 380px; overflow-y: auto;">
+            <!-- Populated via JS -->
+            <p style="color:var(--text-muted); font-size:13px; text-align:center; padding:30px;">
+              هنوز مقاله‌ای به کتابخانه افزوده نشده است. از تب «کاوش مقالات کانسنسوس» چند مقاله اضافه کنید تا هوش مصنوعی متن را دقیقاً مستند به آن‌ها بنویسد.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor & Live Preview Card -->
+      <div class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div class="card-title">📝 ویرایشگر و پیش‌نمایش خروجی مقاله</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-success btn-sm" onclick="exportWordDocx()">
+              📥 دانلود فایل Word (.docx)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportMarkdownFile()">
+              📥 دانلود Markdown (.md)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="copyEditorContent()">
+              📋 کپی متن
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-container">
+          <!-- Textarea -->
+          <div class="editor-pane">
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">متن با فرمت Markdown (قابل ویرایش مستقیم):</div>
+            <textarea id="paper-editor" class="editor-textarea" placeholder="متن تولید شده در اینجا قرار می‌گیرد..."></textarea>
+          </div>
+
+          <!-- Formatted Preview -->
+          <div class="editor-pane">
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">پیش‌نمایش فرمت‌بندی شده:</div>
+            <div id="paper-preview" class="preview-pane">
+              <p style="color:var(--text-muted); text-align:center; margin-top:100px;">
+                پس از کلیک بر روی «تولید و سنتز بخش مقاله»، پیش‌نمایش مستندات در اینجا ظاهر می‌شود.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: CONSENSUS LITERATURE SEARCH -->
+    <div id="tab-search" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔍 جستجوی پیشرفته در بیش از ۴۰۰ میلیون مقاله داوری‌شده Consensus</div>
+          <div id="search-dispatch-badge" class="badge badge-secondary">آماده جستجو</div>
+        </div>
+
+        <div class="search-wrapper">
+          <input type="text" id="search-query-input" class="search-input" placeholder="عبارت یا سوال پژوهشی را وارد کنید (فارسی یا انگلیسی)... e.g. Clinical registry performance evaluation" onkeydown="if(event.key === 'Enter') executeSearch()">
+          <button id="search-btn" class="btn btn-primary" style="padding:0 28px;" onclick="executeSearch()">
+            جستجو در مقالات
+          </button>
+        </div>
+
+        <div class="chips-row">
+          <span style="font-size:12px; color:var(--text-muted); align-self:center;">نمونه‌های پیشنهادی:</span>
+          <span class="chip" onclick="quickSearch('Clinical registry evaluation MCDM')">Clinical registry evaluation MCDM</span>
+          <span class="chip" onclick="quickSearch('Task-Technology Fit health information systems')">Task-Technology Fit health IT</span>
+          <span class="chip" onclick="quickSearch('Artificial intelligence hospital triage decision support')">AI hospital triage decision support</span>
+          <span class="chip" onclick="quickSearch('TOPSIS entropy hospital performance benchmarking')">TOPSIS hospital benchmarking</span>
+        </div>
+
+        <div class="grid-3" style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">از سال انتشار:</label>
+            <input type="number" id="filter-year-min" class="form-control" placeholder="مثال: 2020" value="2020">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">تا سال انتشار:</label>
+            <input type="number" id="filter-year-max" class="form-control" placeholder="مثال: 2026" value="2026">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">تعداد نتایج در هر صفحه:</label>
+            <select id="filter-page-size" class="form-control">
+              <option value="10">۱۰ مقاله</option>
+              <option value="20">۲۰ مقاله</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Results Feed -->
+      <div id="search-results-container">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- TAB 3: LITERATURE MATRIX & LIBRARY -->
+    <div id="tab-library" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📚 کتابخانه مقالات ذخیره‌شده و ماتریس مرور پیشینه (Literature Review Matrix)</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary btn-sm" onclick="exportEndNoteEnw()">
+              📥 خروجی EndNote (.enw)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="exportEndNoteRis()">
+              📥 خروجی RIS (.ris)
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="clearLibrary()">
+              🗑️ پاکسازی کتابخانه
+            </button>
+          </div>
+        </div>
+
+        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:16px;">
+          تمام مقالاتی که از بخش جستجوی کانسنسوس نشان کرده‌اید در این جدول ماتریسی تجمیع شده‌اند و در نگارش بخش‌های مقدمه، مبانی نظری و رفرنس‌ها استفاده می‌شوند.
+        </p>
+
+        <div class="table-responsive">
+          <table id="matrix-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>نویسندگان</th>
+                <th style="width:70px;">سال</th>
+                <th>عنوان مقاله پژوهشی</th>
+                <th>نام مجله</th>
+                <th style="width:120px;">طراحی مطالعه</th>
+                <th style="width:90px;">جامعه/نمونه</th>
+                <th>یافته و دستاورد کلیدی هوش مصنوعی</th>
+                <th style="width:80px;">ارجاعات</th>
+                <th style="width:60px;">عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: API POOL & DISPATCHER MANAGEMENT -->
+    <div id="tab-keys" class="tab-content">
+      <div class="grid-2">
+        <!-- Add Single Key -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">➕ افزودن کلید جدید Consensus</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">نام یا برچسب اکانت:</label>
+            <input type="text" id="new-key-name" class="form-control" placeholder="مثال: اکانت ۷ (حساب کاری)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">کلید API اختصاصی (از consensus.app/api-mcp):</label>
+            <input type="password" id="new-key-token" class="form-control" placeholder="کلید API خود را وارد کنید...">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" onclick="testSingleKeyInput()">
+              🩺 تست اتصال زنده
+            </button>
+            <button class="btn btn-primary" onclick="submitSingleKey()">
+              ثبت و افزودن به استخر
+            </button>
+          </div>
+          <div id="key-test-feedback" style="margin-top:12px; font-size:13px;"></div>
+        </div>
+
+        <!-- Bulk Import -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚡ افزودن همزمان چند کلید (ورود دسته‌ای)</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">کلیدها را خط به خط در کادر زیر قرار دهید (۶ کلید یا بیشتر):</label>
+            <textarea id="bulk-keys-input" class="form-control" rows="4" placeholder="کلید اکانت ۱&#10;کلید اکانت ۲&#10;کلید اکانت ۳... یا با فرمت نام:کلید"></textarea>
+          </div>
+          <button class="btn btn-success" style="width:100%;" onclick="submitBulkKeys()">
+            🚀 افزودن تمام کلیدها به بالانسر
+          </button>
+        </div>
+      </div>
+
+      <!-- Keys Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🛡️ استخر کلیدهای فعال و منطق توزیع بار (Load Balancing Pool)</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="resetAllKeys()">
+              🔄 بازنشانی تمام وضعیت‌ها و ریت‌لیمیت‌ها
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="refreshKeysList()">
+              تازه‌سازی لیست
+            </button>
+          </div>
+        </div>
+
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          <strong>منطق عملکرد بالانسر:</strong> درخواست‌ها به شیوه راند رابین (Round-Robin) بین تمام کلیدهای فعال توزیع می‌شوند. در صورت بروز خطای ریت لیمیت (۴۲۹)، کلید بلافاصله برای ۶۰ ثانیه وارد دوره خنک‌سازی شده و درخواست بدون وقفه به کلید بعدی منتقل می‌شود.
+        </p>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>نام اکانت</th>
+                <th>کلید API (محافظت‌شده)</th>
+                <th>وضعیت فعلی</th>
+                <th>درخواست‌های موفق</th>
+                <th>آخرین استفاده</th>
+                <th>آخرین خطا / پیام سیستم</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="keys-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: FAILOVER & ACTIVITY LOGS -->
+    <div id="tab-logs" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📊 لاگ‌های نظارت، توزیع بار و سوییچ خودکار (Failover Logs)</div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="refreshLogs()">تازه‌سازی لاگ‌ها</button>
+            <label style="font-size:13px; display:flex; align-items:center; gap:6px;">
+              <input type="checkbox" id="auto-refresh-logs" checked> بروزرسانی خودکار هر ۳ ثانیه
+            </label>
+          </div>
+        </div>
+
+        <div id="logs-container" style="background:var(--bg-main); border-radius:8px; border:1px solid var(--border); max-height:550px; overflow-y:auto;">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast">پیام سیستم</div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

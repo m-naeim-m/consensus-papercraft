@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "description": "قالب استخر کلیدهای API کانسنسوس - کلیدهای خود را در این فایل قرار داده و آن را به consensus_keys.json تغییر نام دهید",
+  "keys": [
+    {
+      "id": "acc-1",
+      "name": "اکانت شماره ۱",
+      "key": "YOUR_CONSENSUS_API_KEY_1",
+      "status": "active"
+    },
+    {
+      "id": "acc-2",
+      "name": "اکانت شماره ۲",
+      "key": "YOUR_CONSENSUS_API_KEY_2",
+      "status": "active"
+    },
+    {
+      "id": "acc-3",
+      "name": "اکانت شماره ۳",
+      "key": "YOUR_CONSENSUS_API_KEY_3",
+      "status": "active"
+    },
+    {
+      "id": "acc-4",
+      "name": "اکانت شماره ۴",
+      "key": "YOUR_CONSENSUS_API_KEY_4",
+      "status": "active"
+    },
+    {
+      "id": "acc-5",
+      "name": "اکانت شماره ۵",
+      "key": "YOUR_CONSENSUS_API_KEY_5",
+      "status": "active"
+    },
+    {
+      "id": "acc-6",
+      "name": "اکانت شماره ۶",
+      "key": "YOUR_CONSENSUS_API_KEY_6",
+      "status": "active"
+    }
+  ]
+}

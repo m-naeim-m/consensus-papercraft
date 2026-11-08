@@ -1,0 +1,49 @@
+# Security & Secret Keys (DO NOT COMMIT REAL KEYS)
+consensus_keys.json
+.env
+*.pem
+*.key
+*.token
+
+# Python runtime & caches
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.pytest_cache/
+
+# Local databases & user drafts
+paper_projects.json
+papers_library.json
+*.log
+
+# Personal Thesis & Academic files (kept safe locally, ignored in Git)
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+*.zip
+extracted_proposal.txt
+کتابخانه_اندنوت_پایان_نامه/
+
+# Other unrelated tools & dumps
+ChatToAgent/
+ChatToAgent-Extension/
+ChatToAgent-Chrome-v0.7.2.zip
+OpenBrowser/
+learning_materials/
+analyzed_posts.json
+channel_posts.json
+tools_extracted.json
+start_ChatToAgent.bat
+
+# Windows & Office Temporary files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+~$*.doc*
+~$*.xls*
+~$*.ppt*
+*.tmp
